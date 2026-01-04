@@ -8,9 +8,25 @@ from email.mime.text import MIMEText
 
 import dotenv
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 
-def perform_checkin(cookie: str, token: str, timeout: int = 20) -> dict:
+def get_session() -> requests.Session:
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        backoff_factor=1,
+        status_forcelist=[500, 502, 503, 504],
+        allowed_methods=["HEAD", "GET", "OPTIONS", "POST"],
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def perform_checkin(cookie: str, token: str, timeout: int = 30) -> dict:
     url = "https://glados.rocks/api/user/checkin"
     headers = {
         "accept": "application/json, text/plain, */*",
@@ -21,11 +37,12 @@ def perform_checkin(cookie: str, token: str, timeout: int = 20) -> dict:
         "cookie": cookie,
     }
     data = {"token": token}
-    r = requests.post(url, headers=headers, json=data, timeout=timeout)
+    with get_session() as session:
+        r = session.post(url, headers=headers, json=data, timeout=timeout)
     return r.json()
 
 
-def get_status(cookie: str, timeout: int = 20) -> dict:
+def get_status(cookie: str, timeout: int = 30) -> dict:
     url = "https://glados.rocks/api/user/status"
     headers = {
         "accept": "application/json, text/plain, */*",
@@ -34,7 +51,8 @@ def get_status(cookie: str, timeout: int = 20) -> dict:
         "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         "cookie": cookie,
     }
-    r = requests.get(url, headers=headers, timeout=timeout)
+    with get_session() as session:
+        r = session.get(url, headers=headers, timeout=timeout)
     return r.json()
 
 
