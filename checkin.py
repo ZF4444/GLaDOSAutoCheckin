@@ -27,12 +27,12 @@ def get_session() -> requests.Session:
 
 
 def perform_checkin(cookie: str, token: str, timeout: int = 30) -> dict:
-    url = "https://glados.rocks/api/user/checkin"
+    url = "https://glados.cloud/api/user/checkin"
     headers = {
         "accept": "application/json, text/plain, */*",
         "content-type": "application/json;charset=UTF-8",
-        "origin": "https://glados.rocks",
-        "referer": "https://glados.rocks/console/checkin",
+        "origin": "https://glados.cloud",
+        "referer": "https://glados.cloud/console/checkin",
         "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         "cookie": cookie,
     }
@@ -43,11 +43,11 @@ def perform_checkin(cookie: str, token: str, timeout: int = 30) -> dict:
 
 
 def get_status(cookie: str, timeout: int = 30) -> dict:
-    url = "https://glados.rocks/api/user/status"
+    url = "https://glados.cloud/api/user/status"
     headers = {
         "accept": "application/json, text/plain, */*",
-        "origin": "https://glados.rocks",
-        "referer": "https://glados.rocks/console/checkin",
+        "origin": "https://glados.cloud",
+        "referer": "https://glados.cloud/console/checkin",
         "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         "cookie": cookie,
     }

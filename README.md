@@ -3,8 +3,8 @@
 支持部署在无头 Ubuntu，使用 Cookie 进行签到，并通过邮件发送结果。
 
 ## 功能
-- 访问 `https://glados.rocks/api/user/checkin` 完成每日签到
-- 查询 `https://glados.rocks/api/user/status` 获取剩余天数
+- 访问 `https://glados.cloud/api/user/checkin` 完成每日签到
+- 查询 `https://glados.cloud/api/user/status` 获取剩余天数
 - 通过 SMTP 邮件发送签到结果与剩余天数
 - 适配无头环境（不需要浏览器或桌面）
 
@@ -38,7 +38,7 @@
   ```
 
 ## 获取 GLaDOS Cookie
-1. 浏览器打开 `https://glados.rocks/console/checkin` 并登录
+1. 浏览器打开 `https://glados.cloud/console/checkin` 并登录
 2. 打开开发者工具 Network 标签
 3. 刷新页面，找到名为 `status` 的网络请求
 4. 在该请求的 Request Headers 中复制 `Cookie` 字段（通常形如 `koa:sess=...; koa:sess.sig=...`）
