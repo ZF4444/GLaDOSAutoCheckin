@@ -152,7 +152,7 @@ def main():
 
     parser = argparse.ArgumentParser(prog="glados-checkin")
     parser.add_argument("--cookie", default=os.environ.get("GLADOS_COOKIE", ""))
-    parser.add_argument("--token", default=os.environ.get("GLADOS_TOKEN", "glados.one"))
+    parser.add_argument("--token", default=os.environ.get("GLADOS_TOKEN", "glados.cloud"))
     parser.add_argument("--smtp-host", default=os.environ.get("EMAIL_SMTP_HOST", ""))
     parser.add_argument("--smtp-port", type=int, default=int(os.environ.get("EMAIL_SMTP_PORT", "587")))
     parser.add_argument("--smtp-user", default=os.environ.get("EMAIL_SMTP_USER", ""))
