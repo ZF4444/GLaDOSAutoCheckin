@@ -140,3 +140,10 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Python environment
+.venv/
+__pycache__/
+
+# Browser login credentials
+.browser-auth/

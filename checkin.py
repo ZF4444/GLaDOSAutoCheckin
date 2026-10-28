@@ -33,7 +33,7 @@ def perform_checkin(cookie: str, token: str, timeout: int = 30) -> dict:
         "content-type": "application/json;charset=UTF-8",
         "origin": "https://glados.cloud",
         "referer": "https://glados.cloud/console/checkin",
-        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "user-agent": (os.environ.get("GLADOS_USER_AGENT") or "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"),
         "cookie": cookie,
     }
     data = {"token": token}
@@ -48,7 +48,7 @@ def get_status(cookie: str, timeout: int = 30) -> dict:
         "accept": "application/json, text/plain, */*",
         "origin": "https://glados.cloud",
         "referer": "https://glados.cloud/console/checkin",
-        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "user-agent": (os.environ.get("GLADOS_USER_AGENT") or "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"),
         "cookie": cookie,
     }
     with get_session() as session:
@@ -168,12 +168,13 @@ def main():
     subject, body = build_email_content(checkin_resp, status_resp)
     print(subject)
     print(body)
+    exit_status = 0 if checkin_resp.get("code") in (0, 1) else 1
     if args.no_email:
-        return
+        return exit_status
     must = [args.smtp_host, args.from_addr, args.to_addr]
     if not all(must):
         print("邮件未发送：缺少 EMAIL_SMTP_HOST/EMAIL_FROM/EMAIL_TO 配置")
-        return
+        return exit_status
     try:
         send_email(
             args.smtp_host,
@@ -186,10 +187,11 @@ def main():
             body,
         )
         print("邮件发送成功")
+        return exit_status
     except Exception as e:
         print(f"邮件发送失败：{e}", file=sys.stderr)
         raise
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
