@@ -171,7 +171,7 @@ python3 checkin.py --cookie "koa:sess=...; koa:sess.sig=..." --no-email
 ## 失败排查
 - 没有权限：检查 `GLADOS_COOKIE` 是否有效、是否过期
 - 签到失败：尝试将 `GLADOS_TOKEN` 设置为 `glados.cloud` 或站点当前使用的 token
-- 网络错误：在服务器上确认能访问 `https://glados.rocks/api/user/status`
+- 网络错误：在服务器上确认能访问 `https://glados.cloud/api/user/status`
 
 ## Cookie 与 User-Agent 配置
 
@@ -185,4 +185,14 @@ GLADOS_TOKEN=glados.cloud
 
 Cookie 过期后重新登录并更新 Cookie；切换浏览器时同时更新 User-Agent。此配置不保证网站始终允许自动签到。
 
-当前已验证匹配的 Cookie 和 User-Agent 能通过直接请求返回“今日已签到”，首次签到仍待次日验证。签到失败时脚本返回非零退出码，便于定时任务识别失败。
+2026-10-29 已验证：北京时间 09:30 的 cron 任务通过直接请求完成当日首次签到，接口返回 `Checkin! Got 4 Points`，结果邮件发送成功。日常执行无需启动浏览器，也不依赖 Playwright；此结果仅代表当前配置可用。
+
+签到失败时脚本返回非零退出码，便于定时任务识别失败。当前部署每日北京时间 09:30 执行 `checkin.py`，日志位于 `logs/checkin.log`。可用以下命令检查运行结果：
+
+```bash
+tail -50 logs/checkin.log
+crontab -l
+systemctl is-active cron
+```
+
+若出现“没有权限”，重新登录网站并更新 `.env` 中的 `GLADOS_COOKIE`；若返回 `device-mismatch`，同时检查 `GLADOS_USER_AGENT` 是否与该 Cookie 的登录浏览器一致。更新配置后可运行 `.venv/bin/python checkin.py --no-email` 验证（会实际请求签到）。无需重建虚拟环境或重新安装定时任务。
